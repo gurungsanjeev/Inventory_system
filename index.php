@@ -35,6 +35,9 @@ require_once('inc/header.html');
 						aria-controls="v-pills-search" aria-selected="false">Search</a>
 					<a class="nav-link" id="v-pills-reports-tab" data-toggle="pill" href="#v-pills-reports" role="tab"
 						aria-controls="v-pills-reports" aria-selected="false">Reports</a>
+					<!-- <a class="nav-link" id="v-pills-reports-tab" data-toggle="pill" href="#v-pills-stock" role="tab"
+						aria-controls="v-pills-reports" aria-selected="false">Stock</a> -->
+
 				</div>
 				<style>
 					#salesPieChart {
@@ -68,7 +71,7 @@ require_once('inc/header.html');
 										<form>
 											<div class="form-row">
 												<div class="form-group col-md-3" style="display:inline-block">
-													<label for="itemDetailsItemNumber">Item Number<span
+													<label for="itemDetailsItemNumber">Item Numbers<span
 															class="requiredIcon">*</span></label>
 													<input type="text" class="form-control" name="itemDetailsItemNumber"
 														id="itemDetailsItemNumber" autocomplete="off">
@@ -116,8 +119,8 @@ require_once('inc/header.html');
 												<div class="form-group col-md-3">
 													<label for="itemDetailsQuantity">Quantity<span
 															class="requiredIcon">*</span></label>
-													<input type="number" class="form-control" value="0"
-														name="itemDetailsQuantity" id="itemDetailsQuantity">
+													<input type="number" class="form-control" value="1"
+														name="itemDetailsQuantity" id="itemDetailsQuantity" min="1">
 												</div>
 												<div class="form-group col-md-3">
 													<label for="itemDetailsUnitPrice">Unit Price<span
@@ -188,6 +191,10 @@ require_once('inc/header.html');
 							</div>
 						</div>
 					</div>
+
+
+					<!-- ////////////////// Purchase Details/////////////////////////// -->
+
 					<div class="tab-pane fade" id="v-pills-purchase" role="tabpanel"
 						aria-labelledby="v-pills-purchase-tab">
 						<div class="card card-outline-secondary my-4">
@@ -195,6 +202,82 @@ require_once('inc/header.html');
 							<div class="card-body">
 								<div id="purchaseDetailsMessage"></div>
 								<form>
+									<div class="form-row">
+										<div class="form-group col-md-2">
+											<label for="purchaseDetailsPurchaseID">Bill No</label>
+											<input type="text" class="form-control invTooltip"
+												id="purchaseDetailsPurchaseID" name="purchaseDetailsPurchaseID"
+												title="This will be auto-generated when you add a new record"
+												autocomplete="off">
+											<div id="purchaseDetailsPurchaseIDSuggestionsDiv"
+												class="customListDivWidth"></div>
+										</div>
+										<!-- <div class="form-group col-md-3">
+											<label for="purchaseDetailsItemNumber">Item Number<span
+													class="requiredIcon">*</span></label>
+											<input type="text" class="form-control" id="purchaseDetailsItemNumber"
+												name="purchaseDetailsItemNumber" autocomplete="off">
+											<div id="purchaseDetailsItemNumberSuggestionsDiv"
+												class="customListDivWidth"></div>
+										</div> -->
+										<div class="form-group col-md-3">
+											<label for="purchaseDetailsPurchaseDate">Purchase Date
+												<span class="requiredIcon">*</span>
+											</label>
+											<input type="date" class="form-control" id="purchaseDetailsPurchaseDate"
+												name="purchaseDetailsPurchaseDate" max="" required>
+										</div>
+
+										<script>
+											window.addEventListener('DOMContentLoaded', function () {
+												const dateInput = document.getElementById('purchaseDetailsPurchaseDate');
+
+												// Get current date in YYYY-MM-DD format
+												const today = new Date().toISOString().split('T')[0];
+
+												// Set max attribute to today to disable future dates
+												dateInput.max = today;
+
+												// Set the default value to today
+												dateInput.value = today;
+											});
+										</script>
+
+
+										</script>
+										<!-- <div class="form-group col-md-2">
+											<label for="purchaseDetailsPurchaseID">Bill No</label>
+											<input type="text" class="form-control invTooltip"
+												id="purchaseDetailsPurchaseID" name="purchaseDetailsPurchaseID"
+												title="This will be auto-generated when you add a new record"
+												autocomplete="off">
+											<div id="purchaseDetailsPurchaseIDSuggestionsDiv"
+												class="customListDivWidth"></div>
+										</div> -->
+										<form onsubmit="return validateForm()" id="myForm">
+											<div class="form-group col-md-2">
+												<label for="purchaseDetailsPurchaseInvoice">Purchase Invoice
+													<span class="requiredIcon">*</span></label>
+												<input type="text" class="form-control invTooltip"
+													id="itemDetailsPurchaseInvoice" name="itemDetailsPurchaseInvoice"
+													title="Enter Invoice number" autocomplete="off" required>
+												<!-- <input type="text" name="itemDetailsPurchaseInvoice"
+													id="itemDetailsPurchaseInvoice" required> -->
+											</div>
+											<!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+										</form>
+										<script>
+											document.getElementById('myForm').addEventListener('submit', function (e) {
+												const invoiceField = document.getElementById('purchaseDetailsPurchaseInvoiceID');
+												if (!invoiceField.value.trim()) {
+													alert("Purchase Invoice is required!");
+													invoiceField.focus();
+													e.preventDefault(); // Prevent form submission
+												}
+											});
+
+										</script>
+									</div>
 									<div class="form-row">
 										<div class="form-group col-md-3">
 											<label for="purchaseDetailsItemNumber">Item Number<span
@@ -204,24 +287,6 @@ require_once('inc/header.html');
 											<div id="purchaseDetailsItemNumberSuggestionsDiv"
 												class="customListDivWidth"></div>
 										</div>
-										<div class="form-group col-md-3">
-											<label for="purchaseDetailsPurchaseDate">Purchase Date<span
-													class="requiredIcon">*</span></label>
-											<input type="text" class="form-control datepicker"
-												id="purchaseDetailsPurchaseDate" name="purchaseDetailsPurchaseDate"
-												readonly value="2025-05-14">
-										</div>
-										<div class="form-group col-md-2">
-											<label for="purchaseDetailsPurchaseID">Purchase ID</label>
-											<input type="text" class="form-control invTooltip"
-												id="purchaseDetailsPurchaseID" name="purchaseDetailsPurchaseID"
-												title="This will be auto-generated when you add a new record"
-												autocomplete="off">
-											<div id="purchaseDetailsPurchaseIDSuggestionsDiv"
-												class="customListDivWidth"></div>
-										</div>
-									</div>
-									<div class="form-row">
 										<div class="form-group col-md-4">
 											<label for="purchaseDetailsItemName">Item Name<span
 													class="requiredIcon">*</span></label>
@@ -229,11 +294,11 @@ require_once('inc/header.html');
 												id="purchaseDetailsItemName" name="purchaseDetailsItemName" readonly
 												title="This will be auto-filled when you enter the item number above">
 										</div>
-										<div class="form-group col-md-2">
+										<!-- <div class="form-group col-md-2">
 											<label for="purchaseDetailsCurrentStock">Current Stock</label>
 											<input type="text" class="form-control" id="purchaseDetailsCurrentStock"
 												name="purchaseDetailsCurrentStock" readonly>
-										</div>
+										</div> -->
 										<div class="form-group col-md-4">
 											<label for="purchaseDetailsVendorName">Vendor Name<span
 													class="requiredIcon">*</span></label>
@@ -247,16 +312,22 @@ require_once('inc/header.html');
 									</div>
 									<div class="form-row">
 										<div class="form-group col-md-2">
+											<label for="purchaseDetailsCurrentStock">Current Stock</label>
+											<input type="text" class="form-control" id="purchaseDetailsCurrentStock"
+												name="purchaseDetailsCurrentStock" readonly>
+										</div>
+										<div class="form-group col-md-2">
+
 											<label for="purchaseDetailsQuantity">Quantity<span
 													class="requiredIcon">*</span></label>
 											<input type="number" class="form-control" id="purchaseDetailsQuantity"
-												name="purchaseDetailsQuantity" value="0">
+												name="purchaseDetailsQuantity" value="1" min="1">
 										</div>
 										<div class="form-group col-md-2">
 											<label for="purchaseDetailsUnitPrice">Unit Price<span
 													class="requiredIcon">*</span></label>
-											<input type="text" class="form-control" id="purchaseDetailsUnitPrice"
-												name="purchaseDetailsUnitPrice" value="0">
+											<input type="number" class="form-control" id="purchaseDetailsUnitPrice"
+												name="purchaseDetailsUnitPrice" value="1">
 
 										</div>
 										<div class="form-group col-md-2">
@@ -311,7 +382,7 @@ require_once('inc/header.html');
 													class="requiredIcon">*</span></label>
 											<input type="text" class="form-control invTooltip"
 												id="vendorDetailsVendorMobile" name="vendorDetailsVendorMobile"
-												title="Do not enter leading 0">
+												title="enter number">
 										</div>
 										<div class="form-group col-md-3">
 											<label for="vendorDetailsVendorPhone2">Phone 2</label>
@@ -342,10 +413,10 @@ require_once('inc/header.html');
 											<input type="text" class="form-control" id="vendorDetailsVendorCity"
 												name="vendorDetailsVendorCity">
 										</div>
-										<div class="form-group col-md-4">
+										<div class="form-group col-md-4" style="overflow:scroll height:50px;">
 											<label for="vendorDetailsVendorDistrict">District</label>
-											<select id="vendorDetailsVendorDistrict" name="vendorDetailsVendorDistrict"
-												class="form-control chosenSelect">
+											<select style="overflow:hidden;" id="vendorDetailsVendorDistrict"
+												name="vendorDetailsVendorDistrict" class="form-control chosenSelect">
 												<?php include('inc/districtList.html'); ?>
 											</select>
 										</div>
@@ -360,6 +431,67 @@ require_once('inc/header.html');
 							</div>
 						</div>
 					</div>
+
+
+
+					<!-- ***************************************************************************************** 
+ *****************************************Stock details****************************************
+ ******************************************************************************************************** -->
+					<!-- <div class="tab-pane fade" id="v-pills-stock" role="tabpanel" aria-labelledby="v-pills-stock-tab">
+						<div class="card card-outline-secondary my-4">
+							<div class="card-header">Stock Details</div>
+							<div class="card-body">
+								<div id="stockDetailsMessage"></div>
+								<form>
+									<div class="form-row">
+										<div class="form-group col-md-3">
+											<label for="stockDetailsItemNumber">Item code<span
+													class="requiredIcon">*</span></label>
+											<input type="text" class="form-control" id="saleDetailsItemNumber"
+												name="saleDetailsItemNumber" autocomplete="off">
+											<div id="saleDetailsItemNumberSuggestionsDiv" class="customListDivWidth">
+											</div>
+										</div>
+
+									</div>
+									<div class="form-row">
+										<div class="form-group col-md-5">
+											<label for="saleDetailsItemName">Item Name</label>
+											
+											
+											
+											<input type="text" class="form-control invTooltip" id="saleDetailsItemName"
+												name="saleDetailsItemName" readonly
+												title="This will be auto-filled when you enter the item number above">
+										</div>
+
+									</div>
+									<div class="form-row">
+										<div class="form-group col-md-2">
+											<label for="saleDetailsTotalStock">Total Stock</label>
+											<input type="text" class="form-control" name="saleDetailsTotalStock"
+												id="saleDetailsTotalStock" readonly>
+										</div>
+
+
+										<div class="form-group col-md-2">
+											<label for="saleDetailsUnitPrice">Unit Price</label><input type="text"
+												class="form-control" id="saleDetailsUnitPrice"
+												name="saleDetailsUnitPrice" readonly>
+										</div>
+
+									</div>
+									<div class="form-row">
+										<div class="form-group col-md-3">
+											<div id="saleDetailsImageContainer"></div>
+										</div>
+									</div>
+
+									<button type="reset" id="saleClear" class="btn">Clear</button>
+								</form>
+							</div>
+						</div>
+					</div> -->
 
 
 
@@ -394,7 +526,8 @@ require_once('inc/header.html');
 										<div class="form-group col-md-4">
 											<label for="saleDetailsCustomerName">Customer Name</label>
 											<input type="text" class="form-control" id="saleDetailsCustomerName"
-												name="saleDetailsCustomerName" readonly>
+												name="saleDetailsCustomerName">
+											<div id="saleDetailsSaleIDSuggestionsDiv" class="customListDivWidth"></div>
 										</div>
 										<div class="form-group col-md-2">
 											<label for="saleDetailsSaleID">Sale ID</label>
@@ -418,11 +551,41 @@ require_once('inc/header.html');
 												title="This will be auto-filled when you enter the item number above">
 										</div>
 										<div class="form-group col-md-3">
-											<label for="saleDetailsSaleDate">Sale Date<span
-													class="requiredIcon">*</span></label>
-											<input type="text" class="form-control datepicker" id="saleDetailsSaleDate"
-												value="2025-05-14" name="saleDetailsSaleDate" readonly>
+											<label for="saleDetailsSaleDate">Sale Date
+												<span class="requiredIcon">*</span>
+											</label>
+											<input type="date" class="form-control" id="saleDetailsSaleDate"
+												name="saleDetailsSaleDate" max="" required>
 										</div>
+
+										<script>
+											window.addEventListener('DOMContentLoaded', function () {
+												const dateInput = document.getElementById('saleDetailsSaleDate');
+
+												// Get current date in YYYY-MM-DD format
+												const today = new Date().toISOString().split('T')[0];
+
+												// Set value and max attribute to today
+												dateInput.value = today;
+												dateInput.max = today;
+											});
+										</script>
+
+
+
+
+										<script>
+
+											window.addEventListener('DOMContentLoaded', function () {
+												const dateInput = document.getElementById('saleDetailsSaleDate');
+
+												// Get current date in YYYY-MM-DD format
+												const today = new Date().toISOString().split('T')[0];
+
+												// Set the value
+												dateInput.value = today;
+											});
+										</script>
 									</div>
 									<div class="form-row">
 										<div class="form-group col-md-2">
@@ -439,7 +602,7 @@ require_once('inc/header.html');
 											<label for="saleDetailsQuantity">Quantity<span
 													class="requiredIcon">*</span></label>
 											<input type="number" class="form-control" id="saleDetailsQuantity"
-												name="saleDetailsQuantity" min="0" value="0">
+												name="saleDetailsQuantity" min="1" value="1">
 										</div>
 										<div class="form-group col-md-2">
 											<label for="saleDetailsUnitPrice">Unit Price<span
@@ -639,11 +802,11 @@ require_once('inc/header.html');
 								</ul>
 
 								<!----------------------------------------------------------------------------
------------------------------------------------------
-----------------------------------------
- <p> reports for sales</p> 
- ---------------------------------------------------------------
- ---------------------------------------------------------------------------->
+									-----------------------------------------------------
+									----------------------------------------
+									<p> reports for sales</p> 
+									---------------------------------------------------------------
+									---------------------------------------------------------------------------->
 								<div class="tab-content">
 									<div id="itemReportsTab" class="container-fluid tab-pane active">
 										<br>
@@ -730,18 +893,6 @@ require_once('inc/header.html');
 											<button type="reset" id="purchaseFilterClear" class="btn">Clear</button>
 										</form>
 
-
-										
-
-
-
-
-
-
-
-
-
-										
 
 										<br><br>
 										<div class="table-responsive" id="purchaseReportsTableDiv"></div>

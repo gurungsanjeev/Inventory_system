@@ -1,25 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
 
-    <title>Inventory Control System</title>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
 
-    <!-- Bootstrap core CSS -->
-    <!-- <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
+	<title>Inventory Management System</title>
+
+	<!-- Bootstrap core CSS -->
+	<!-- <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
 	<link rel="stylesheet" href="vendor/bootstrap/css/cerulean.theme.min.css">
-	
+
 	<!-- Datatables CSS -->
 	<link rel="stylesheet" type="text/css" href="vendor/DataTables/datatables.css">
-	
+
 	<!-- Datepicker CSS -->
 	<link rel="stylesheet" href="vendor/datepicker164/css/bootstrap-datepicker.min.css">
 
-    <!-- Custom styles -->
-    <link href="assets/css/shop-styles.css" rel="stylesheet">
+	<!-- Custom styles -->
+	<link href="assets/css/shop-styles.css" rel="stylesheet">
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </head>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+	<style>
+		body {
+			background: linear-gradient(135deg, #f8f9ff, #e0ecff);
+			font-family: 'Poppins', sans-serif;
+			color: #333;
+			min-height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.card {
+			border: none;
+			border-radius: 20px;
+			backdrop-filter: blur(8px);
+			box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+			background: rgba(255, 255, 255, 0.75);
+			padding: 2rem;
+		}
+
+		.card-header {
+			background: transparent;
+			border-bottom: none;
+			text-align: center;
+			font-size: 1.5rem;
+			font-weight: 600;
+			color: #2c3e50;
+			margin-bottom: 1rem;
+		}
+
+		/* .form-control {
+		border-radius: 12px;
+		padding: 0.75rem 1rem;
+
+		border: 1px solid #dcdde1;
+    color: black;
+		transition: border-color 0.3s;
+	} */
+
+		.suggestionsList {
+			max-height: 200px;
+			overflow-y: auto;
+			background: #fff;
+			border: 1px solid #dcdde1;
+			border-radius: 8px;
+			margin-top: 5px;
+			z-index: 1000;
+		}
+
+		.list-group-item.sale-id-suggestion {
+			cursor: pointer;
+			padding: 8px 12px;
+			transition: background 0.3s;
+		}
+
+		.list-group-item.sale-id-suggestion:hover {
+			background: #f8f9ff;
+		}
+
+
+
+
+		.form-control:focus {
+			border-color: #6c63ff;
+			box-shadow: 0 0 0 0.2rem rgba(108, 99, 255, 0.25);
+			color: black;
+		}
+
+		.btn {
+			border-radius: 12px;
+			padding: 0.6rem 1.2rem;
+			font-weight: 500;
+			transition: all 0.3s;
+		}
+
+		.btn-primary {
+			background: linear-gradient(to right, #6c63ff, #5f27cd);
+			border: none;
+			color: white;
+		}
+
+		.btn-success {
+			background: linear-gradient(to right, #00b894, #00cec9);
+			border: none;
+			color: white;
+		}
+
+		.btn-warning {
+			background: linear-gradient(to right, #fdcb6e, #e17055);
+			border: none;
+			color: black;
+		}
+
+		.btn:hover {
+			transform: scale(1.03);
+		}
+
+		.requiredIcon {
+			color: red;
+			margin-left: 4px;
+		}
+	</style>
+
+</head>

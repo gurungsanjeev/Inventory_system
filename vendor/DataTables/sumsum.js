@@ -13,7 +13,7 @@
  *
  *  @name sum()
  *  @summary Sum the values in a data set.
- *  @author [Allan Jardine](http://sprymedia.co.uk)
+// 
  *  @requires DataTables 1.10+
  *
  *  @returns {Number} Summed value
@@ -36,15 +36,15 @@
  *    } );
  */
 
-jQuery.fn.dataTable.Api.register( 'sum()', function ( ) {
-	return this.flatten().reduce( function ( a, b ) {
-		if ( typeof a === 'string' ) {
+jQuery.fn.dataTable.Api.register('sum()', function () {
+	return this.flatten().reduce(function (a, b) {
+		if (typeof a === 'string') {
 			a = a.replace(/[^\d.-]/g, '') * 1;
 		}
-		if ( typeof b === 'string' ) {
+		if (typeof b === 'string') {
 			b = b.replace(/[^\d.-]/g, '') * 1;
 		}
 
 		return a + b;
-	}, 0 );
-} );
+	}, 0);
+});
