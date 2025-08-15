@@ -1,22 +1,22 @@
 <?php
-	require_once('../../inc/config/constants.php');
-	require_once('../../inc/config/db.php');
-	
-	$uPrice = 0;
-	$qty = 0;
-	$totalPrice = 0;
+require_once('../../inc/config/constants.php');
+require_once('../../inc/config/db.php');
 
-	// Fetch sales data
-	$saleDetailsSearchSql = 'SELECT * FROM sale';
-	$saleDetailsSearchStatement = $conn->prepare($saleDetailsSearchSql);
-	$saleDetailsSearchStatement->execute();
+$uPrice = 0;
+$qty = 0;
+$totalPrice = 0;
 
-	// Initialize chart data arrays
-	$salesByItem = [];
-	$salesByMonth = [];
+// Fetch sales data
+$saleDetailsSearchSql = 'SELECT * FROM sale';
+$saleDetailsSearchStatement = $conn->prepare($saleDetailsSearchSql);
+$saleDetailsSearchStatement->execute();
 
-	// Build table output
-	$output = '<table id="saleReportsTable" class="table table-sm table-striped table-bordered table-hover" style="width:100%">
+// Initialize chart data arrays
+$salesByItem = [];
+$salesByMonth = [];
+
+// Build table output
+$output = '<table id="saleReportsTable" class="table table-sm table-striped table-bordered table-hover" style="width:100%">
 				<thead>
 					<tr>
 						<th>Sale ID</th>
@@ -32,46 +32,46 @@
 					</tr>
 				</thead>
 				<tbody>';
-	
-	// Loop for table and chart data
-	while($row = $saleDetailsSearchStatement->fetch(PDO::FETCH_ASSOC)) {
-		$uPrice = $row['unitPrice'];
-		$qty = $row['quantity'];
-		$discount = $row['discount'];
-		$totalPrice = $uPrice * $qty * ((100 - $discount)/100);
 
-		// Table row
-		$output .= '<tr>' .
-						'<td>' . $row['saleID'] . '</td>' .
-						'<td>' . $row['itemNumber'] . '</td>' .
-						'<td>' . $row['customerID'] . '</td>' .
-						'<td>' . $row['customerName'] . '</td>' .
-						'<td>' . $row['itemName'] . '</td>' .
-						'<td>' . $row['saleDate'] . '</td>' .
-						'<td>' . $row['discount'] . '</td>' .
-						'<td>' . $row['quantity'] . '</td>' .
-						'<td>' . $row['unitPrice'] . '</td>' .
-						'<td>' . number_format($totalPrice, 2) . '</td>' .
-					'</tr>';
+// Loop for table and chart data
+while ($row = $saleDetailsSearchStatement->fetch(PDO::FETCH_ASSOC)) {
+	$uPrice = $row['unitPrice'];
+	$qty = $row['quantity'];
+	$discount = $row['discount'];
+	$totalPrice = $uPrice * $qty * ((100 - $discount) / 100);
 
-		// Collect Pie chart data - Sales by Item
-		$item = $row['itemName'];
-		if (!isset($salesByItem[$item])) {
-			$salesByItem[$item] = 0;
-		}
-		$salesByItem[$item] += $totalPrice;
+	// Table row
+	$output .= '<tr>' .
+		'<td>' . $row['saleID'] . '</td>' .
+		'<td>' . $row['itemNumber'] . '</td>' .
+		'<td>' . $row['customerID'] . '</td>' .
+		'<td>' . $row['customerName'] . '</td>' .
+		'<td>' . $row['itemName'] . '</td>' .
+		'<td>' . $row['saleDate'] . '</td>' .
+		'<td>' . $row['discount'] . '</td>' .
+		'<td>' . $row['quantity'] . '</td>' .
+		'<td>' . $row['unitPrice'] . '</td>' .
+		'<td>' . number_format($totalPrice, 2) . '</td>' .
+		'</tr>';
 
-		// Collect Bar chart data - Sales by Month
-		$month = date('Y-m', strtotime($row['saleDate']));
-		if (!isset($salesByMonth[$month])) {
-			$salesByMonth[$month] = 0;
-		}
-		$salesByMonth[$month] += $totalPrice;
+	// Collect Pie chart data - Sales by Item
+	$item = $row['itemName'];
+	if (!isset($salesByItem[$item])) {
+		$salesByItem[$item] = 0;
 	}
+	$salesByItem[$item] += $totalPrice;
 
-	$saleDetailsSearchStatement->closeCursor();
+	// Collect Bar chart data - Sales by Month
+	$month = date('Y-m', strtotime($row['saleDate']));
+	if (!isset($salesByMonth[$month])) {
+		$salesByMonth[$month] = 0;
+	}
+	$salesByMonth[$month] += $totalPrice;
+}
 
-	$output .= '</tbody>
+$saleDetailsSearchStatement->closeCursor();
+
+$output .= '</tbody>
 				<tfoot>
 					<tr>
 						<th>Total</th>
@@ -81,19 +81,24 @@
 				</tfoot>
 			</table>';
 
-	// Output the table
-	echo $output;
+// Output the table
+echo $output;
 ?>
 
 <!-- Chart containers -->
-<div class="mt-5">
+<div class="mt-5" style="max-width: 500px; margin: auto;">
 	<h5>Sales by Item (Pie Chart)</h5>
-	<canvas id="salesPieChart" height="100"></canvas>
+	<canvas id="salesPieChart"></canvas>
 </div>
 
 <div class="mt-5">
 	<h5>Monthly Sales (Bar Chart)</h5>
-	<canvas id="salesBarChart" height="100"></canvas>
+	<canvas id="salesBarChart"></canvas>
+</div>
+
+<div class="mt-5">
+	<h5>Monthly Sales Trend (Line Chart)</h5>
+	<canvas id="salesLineChart"></canvas>
 </div>
 
 <!-- Include Chart.js -->
@@ -106,7 +111,7 @@
 
 	// Pie Chart - Sales by Item
 	const pieCtx = document.getElementById('salesPieChart').getContext('2d');
-	const pieChart = new Chart(pieCtx, {
+	new Chart(pieCtx, {
 		type: 'pie',
 		data: {
 			labels: Object.keys(salesByItem),
@@ -114,16 +119,21 @@
 				label: 'Sales by Item',
 				data: Object.values(salesByItem),
 				backgroundColor: [
-					'#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#17a2b8', '#20c997', '#6610f2'
+					'#007bff', '#28a745', '#ffc107', '#dc3545',
+					'#6f42c1', '#17a2b8', '#20c997', '#6610f2'
 				],
 				borderWidth: 1
 			}]
+		},
+		options: {
+			responsive: true,
+			maintainAspectRatio: true
 		}
 	});
 
 	// Bar Chart - Sales by Month
 	const barCtx = document.getElementById('salesBarChart').getContext('2d');
-	const barChart = new Chart(barCtx, {
+	new Chart(barCtx, {
 		type: 'bar',
 		data: {
 			labels: Object.keys(salesByMonth),
@@ -134,11 +144,35 @@
 			}]
 		},
 		options: {
+			responsive: true,
 			scales: {
-				y: {
-					beginAtZero: true
-				}
+				y: { beginAtZero: true }
 			}
 		}
 	});
+
+	// Line Chart - Monthly Sales Trend
+	const lineCtx = document.getElementById('salesLineChart').getContext('2d');
+	new Chart(lineCtx, {
+		type: 'line',
+		data: {
+			labels: Object.keys(salesByMonth),
+			datasets: [{
+				label: 'Monthly Sales Trend',
+				data: Object.values(salesByMonth),
+				fill: false,
+				borderColor: '#28a745',
+				tension: 0.3,
+				pointBackgroundColor: '#28a745',
+				pointRadius: 5
+			}]
+		},
+		options: {
+			responsive: true,
+			scales: {
+				y: { beginAtZero: true }
+			}
+		}
+	});
+
 </script>

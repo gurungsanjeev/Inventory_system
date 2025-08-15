@@ -1,4 +1,4 @@
-<!-- 
+<?php
 require_once('../../inc/config/constants.php');
 require_once('../../inc/config/db.php');
 
@@ -9,7 +9,7 @@ $itemImageFolder = '';
 if (isset($_POST['itemDetailsItemNumber'])) {
 
 	$itemNumber = htmlentities($_POST['itemDetailsItemNumber']);
-	$purchaseInvoice = htmlentities($_POST['itemDetailsPurchaseInvoice']);
+	// $purchaseInvoice = htmlentities($_POST['itemDetailsPurchaseInvoice']);
 	$itemName = htmlentities($_POST['itemDetailsItemName']);
 	$discount = htmlentities($_POST['itemDetailsDiscount']);
 	$quantity = htmlentities($_POST['itemDetailsQuantity']);
@@ -18,7 +18,7 @@ if (isset($_POST['itemDetailsItemNumber'])) {
 	$description = htmlentities($_POST['itemDetailsDescription']);
 
 	// Check if mandatory fields are not empty
-	if (!empty($itemNumber) && !empty($purchaseInvoice) && !empty($itemName) && isset($quantity) && isset($unitPrice)) {
+	if (!empty($itemNumber) && !empty($itemName) && isset($quantity) && isset($unitPrice)) {
 
 		// Sanitize item number
 		$itemNumber = filter_var($itemNumber, FILTER_SANITIZE_STRING);
@@ -83,102 +83,4 @@ if (isset($_POST['itemDetailsItemNumber'])) {
 		echo '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button>Please enter all fields marked with a (*)</div>';
 		exit();
 	}
-} -->
-
-
-<?php
-require_once('../../inc/config/constants.php');
-require_once('../../inc/config/db.php');
-
-// Check if the POST query is received
-if (isset($_POST['itemNumber'])) {
-
-	$itemNumber = htmlentities($_POST['itemNumber']);
-	$purchaseInvoice = htmlentities($_POST['itemDetailsPurchaseInvoice']); // ✅ New field
-	$itemName = htmlentities($_POST['itemDetailsItemName']);
-	$discount = htmlentities($_POST['itemDetailsDiscount']);
-	$itemDetailsQuantity = htmlentities($_POST['itemDetailsQuantity']);
-	$itemDetailsUnitPrice = htmlentities($_POST['itemDetailsUnitPrice']);
-	$status = htmlentities($_POST['itemDetailsStatus']);
-	$description = htmlentities($_POST['itemDetailsDescription']);
-
-	$initialStock = 0;
-	$newStock = 0;
-
-	// Check if mandatory fields are not empty
-	if (!empty($itemNumber) && !empty($itemName) && isset($itemDetailsQuantity) && isset($itemDetailsUnitPrice)) {
-
-		// Sanitize
-		$itemNumber = filter_var($itemNumber, FILTER_SANITIZE_STRING);
-		$purchaseInvoice = filter_var($purchaseInvoice, FILTER_SANITIZE_STRING);
-
-		// Validate quantity
-		if (filter_var($itemDetailsQuantity, FILTER_VALIDATE_INT) === false) {
-			$errorAlert = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button>Please enter a valid number for quantity</div>';
-			echo json_encode(['alertMessage' => $errorAlert]);
-			exit();
-		}
-
-		// Validate unit price
-		if (filter_var($itemDetailsUnitPrice, FILTER_VALIDATE_FLOAT) === false) {
-			$errorAlert = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button>Please enter a valid number for unit price</div>';
-			echo json_encode(['alertMessage' => $errorAlert]);
-			exit();
-		}
-
-		// Validate discount
-		if (!empty($discount) && filter_var($discount, FILTER_VALIDATE_FLOAT) === false) {
-			$errorAlert = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button>Please enter a valid discount amount</div>';
-			echo json_encode(['alertMessage' => $errorAlert]);
-			exit();
-		}
-
-		// Get current stock
-		$stockSelectSql = 'SELECT stock FROM item WHERE itemNumber = :itemNumber';
-		$stockSelectStatement = $conn->prepare($stockSelectSql);
-		$stockSelectStatement->execute(['itemNumber' => $itemNumber]);
-		if ($stockSelectStatement->rowCount() > 0) {
-			$row = $stockSelectStatement->fetch(PDO::FETCH_ASSOC);
-			$initialStock = $row['stock'];
-			$newStock = $initialStock + $itemDetailsQuantity;
-		} else {
-			$errorAlert = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button>Item Number does not exist in DB. Therefore, update not possible.</div>';
-			echo json_encode(['alertMessage' => $errorAlert]);
-			exit();
-		}
-
-		// ✅ Update item details including purchaseInvoice
-		$updateItemDetailsSql = 'UPDATE item SET itemName = :itemName, purchaseInvoice = :purchaseInvoice, discount = :discount, stock = :stock, unitPrice = :unitPrice, status = :status, description = :description WHERE itemNumber = :itemNumber';
-		$updateItemDetailsStatement = $conn->prepare($updateItemDetailsSql);
-		$updateItemDetailsStatement->execute([
-			'itemName' => $itemName,
-			'purchaseInvoice' => $purchaseInvoice,
-			'discount' => $discount,
-			'stock' => $newStock,
-			'unitPrice' => $itemDetailsUnitPrice,
-			'status' => $status,
-			'description' => $description,
-			'itemNumber' => $itemNumber
-		]);
-
-		// Update itemName in sale table
-		$updateItemInSaleTableSql = 'UPDATE sale SET itemName = :itemName WHERE itemNumber = :itemNumber';
-		$updateItemInSaleTableSstatement = $conn->prepare($updateItemInSaleTableSql);
-		$updateItemInSaleTableSstatement->execute(['itemName' => $itemName, 'itemNumber' => $itemNumber]);
-
-		// Update itemName in purchase table
-		$updateItemInPurchaseTableSql = 'UPDATE purchase SET itemName = :itemName WHERE itemNumber = :itemNumber';
-		$updateItemInPurchaseTableSstatement = $conn->prepare($updateItemInPurchaseTableSql);
-		$updateItemInPurchaseTableSstatement->execute(['itemName' => $itemName, 'itemNumber' => $itemNumber]);
-
-		$successAlert = '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button>Item details updated.</div>';
-		echo json_encode(['alertMessage' => $successAlert, 'newStock' => $newStock]);
-		exit();
-
-	} else {
-		$errorAlert = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button>Please enter all fields marked with a (*)</div>';
-		echo json_encode(['alertMessage' => $errorAlert]);
-		exit();
-	}
-}
-?>
+} ?>
