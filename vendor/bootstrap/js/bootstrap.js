@@ -49,19 +49,10 @@
     subClass.__proto__ = superClass;
   }
 
-  /**
-   * --------------------------------------------------------------------------
-   * Bootstrap (v4.0.0): util.js
-   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
-   * --------------------------------------------------------------------------
-   */
+ 
 
   var Util = function ($$$1) {
-    /**
-     * ------------------------------------------------------------------------
-     * Private TransitionEnd Helpers
-     * ------------------------------------------------------------------------
-     */
+   
     var transition = false;
     var MAX_UID = 1000000; // Shoutout AngusCroll (https://goo.gl/pxwQGp)
 
@@ -118,16 +109,11 @@
     }
 
     function escapeId(selector) {
-      // We escape IDs in case of special selectors (selector = '#myId:something')
-      // $.escapeSelector does not exist in jQuery < 3
+  
       selector = typeof $$$1.escapeSelector === 'function' ? $$$1.escapeSelector(selector).substr(1) : selector.replace(/(:|\.|\[|\]|,|=|@)/g, '\\$1');
       return selector;
     }
-    /**
-     * --------------------------------------------------------------------------
-     * Public Util Api
-     * --------------------------------------------------------------------------
-     */
+   
 
 
     var Util = {
@@ -189,12 +175,7 @@
     return Util;
   }($);
 
-  /**
-   * --------------------------------------------------------------------------
-   * Bootstrap (v4.0.0): alert.js
-   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
-   * --------------------------------------------------------------------------
-   */
+
 
   var Alert = function ($$$1) {
     /**
@@ -221,12 +202,7 @@
       ALERT: 'alert',
       FADE: 'fade',
       SHOW: 'show'
-      /**
-       * ------------------------------------------------------------------------
-       * Class Definition
-       * ------------------------------------------------------------------------
-       */
-
+     
     };
 
     var Alert =
@@ -361,12 +337,7 @@
     return Alert;
   }($);
 
-  /**
-   * --------------------------------------------------------------------------
-   * Bootstrap (v4.0.0): button.js
-   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
-   * --------------------------------------------------------------------------
-   */
+ 
 
   var Button = function ($$$1) {
     /**

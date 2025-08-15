@@ -49,18 +49,18 @@ while ($row = $purchaseDetailsSearchStatement->fetch(PDO::FETCH_ASSOC)) {
 		'<td>' . $totalPrice . '</td>' .
 		'</tr>';
 
-	// Chart data by item
+	// Chart data by item (using quantity)
 	if (!isset($purchasesByItem[$row['itemName']])) {
 		$purchasesByItem[$row['itemName']] = 0;
 	}
-	$purchasesByItem[$row['itemName']] += $totalPrice;
+	$purchasesByItem[$row['itemName']] += $qty;
 
-	// Chart data by month (YYYY-MM)
+	// Chart data by month (using quantity, YYYY-MM)
 	$month = date('Y-m', strtotime($row['purchaseDate']));
 	if (!isset($purchasesByMonth[$month])) {
 		$purchasesByMonth[$month] = 0;
 	}
-	$purchasesByMonth[$month] += $totalPrice;
+	$purchasesByMonth[$month] += $qty;
 }
 
 $purchaseDetailsSearchStatement->closeCursor();
@@ -78,18 +78,18 @@ echo $output;
 ?>
 
 <!-- Chart containers -->
-<div class="mt-5" style="max-width: 600px; margin: auto;">
-	<h5>Purchases by Item (Pie Chart)</h5>
+<div class="mt-5" style="max-width: 400px; margin: auto;">
+	<h5>Purchase Item in Quantity (Pie Chart)</h5>
 	<canvas id="purchasePieChart"></canvas>
 </div>
 
 <div class="mt-5" style="max-width: 700px; margin: auto;">
-	<h5>Monthly Purchases (Bar Chart)</h5>
+	<h5>Monthly Purchase Quantity (Bar Chart)</h5>
 	<canvas id="purchaseBarChart"></canvas>
 </div>
 
 <div class="mt-5" style="max-width: 700px; margin: auto;">
-	<h5>Monthly Purchase Trend (Line Chart)</h5>
+	<h5>Monthly Purchase Quantity Trend (Line Chart)</h5>
 	<canvas id="purchaseLineChart"></canvas>
 </div>
 
@@ -101,14 +101,14 @@ echo $output;
 	const purchasesByItem = <?php echo json_encode($purchasesByItem); ?>;
 	const purchasesByMonth = <?php echo json_encode($purchasesByMonth); ?>;
 
-	// Pie Chart - Purchases by Item
+	// Pie Chart - Quantity by Item
 	const pieCtx = document.getElementById('purchasePieChart').getContext('2d');
 	new Chart(pieCtx, {
 		type: 'pie',
 		data: {
 			labels: Object.keys(purchasesByItem),
 			datasets: [{
-				label: 'Purchases by Item',
+				label: 'Quantity by Item',
 				data: Object.values(purchasesByItem),
 				backgroundColor: [
 					'#007bff', '#28a745', '#ffc107', '#dc3545',
@@ -123,14 +123,14 @@ echo $output;
 		}
 	});
 
-	// Bar Chart - Purchases by Month
+	// Bar Chart - Quantity by Month
 	const barCtx = document.getElementById('purchaseBarChart').getContext('2d');
 	new Chart(barCtx, {
 		type: 'bar',
 		data: {
 			labels: Object.keys(purchasesByMonth),
 			datasets: [{
-				label: 'Total Purchases',
+				label: 'Total Quantity',
 				data: Object.values(purchasesByMonth),
 				backgroundColor: '#007bff'
 			}]
@@ -138,19 +138,25 @@ echo $output;
 		options: {
 			responsive: true,
 			scales: {
-				y: { beginAtZero: true }
+				y: {
+					beginAtZero: true,
+					title: {
+						display: true,
+						text: 'Quantity'
+					}
+				}
 			}
 		}
 	});
 
-	// Line Chart - Monthly Purchase Trend
+	// Line Chart - Monthly Quantity Trend
 	const lineCtx = document.getElementById('purchaseLineChart').getContext('2d');
 	new Chart(lineCtx, {
 		type: 'line',
 		data: {
 			labels: Object.keys(purchasesByMonth),
 			datasets: [{
-				label: 'Monthly Purchase Trend',
+				label: 'Monthly Quantity Trend',
 				data: Object.values(purchasesByMonth),
 				fill: false,
 				borderColor: '#28a745',
@@ -162,7 +168,13 @@ echo $output;
 		options: {
 			responsive: true,
 			scales: {
-				y: { beginAtZero: true }
+				y: {
+					beginAtZero: true,
+					title: {
+						display: true,
+						text: 'Quantity'
+					}
+				}
 			}
 		}
 	});
